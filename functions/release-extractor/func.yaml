@@ -11,7 +11,13 @@ build:
   buildEnvs: []
 run:
   volumes: []
-  envs: []
+  envs:
+  - name: GITLAB_API_URL
+    value: to fill
+  - name: JIRA_API_URL
+    value: to fill
+  - name: ISSUE_REGEX
+    value: to fill
 deploy:
   namespace: ""
   remote: false
