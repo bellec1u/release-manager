@@ -45,6 +45,7 @@ const handle = async (context) => {
 
   let fromTagNumber = context.query['fromTag']
   let toTagNumber = context.query['toTag']
+  const isDeltaExtraction = fromTagNumber && toTagNumber
 
   let numberOfTags = Number(context.query['numberOfTags'])
   numberOfTags = numberOfTags ? numberOfTags : defaultNumberOfTags
@@ -54,7 +55,7 @@ const handle = async (context) => {
   // extract gitlab last tags
   let tags
   try {
-    if (fromTagNumber && toTagNumber) {
+    if (isDeltaExtraction) {
       tags = [
         (await getProjectTag(projectId, toTagNumber)).data,
         (await getProjectTag(projectId, fromTagNumber)).data
@@ -68,7 +69,7 @@ const handle = async (context) => {
 
   let commits
   try {
-    if (fromTagNumber && toTagNumber) {
+    if (isDeltaExtraction) {
       commits = (await getProjectCommits(projectId, tags[1]['commit']['committed_date'], tags[0]['commit']['committed_date'])).data
     } else {
       commits = (tags.length < numberOfTags
@@ -84,7 +85,7 @@ const handle = async (context) => {
   let tagsTickets = {}
   let jiraIssues = []
 
-  let tagIndex = fromTagNumber && toTagNumber ? 0 : -1;
+  let tagIndex = isDeltaExtraction ? 0 : -1;
   for (let commit of commits) {
 
     if (tagIndex + 1 < tags.length && commit['committed_date'] < tags[tagIndex + 1]['commit']['committed_date']) {
