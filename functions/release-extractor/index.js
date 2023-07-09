@@ -1,7 +1,10 @@
 const axios = require('axios');
 
 const gitlabApiUrl = process.env.GITLAB_API_URL
+const gitlabToken = process.env.GITLAB_TOKEN
 const jiraApiUrl = process.env.JIRA_API_URL
+const jiraUsername = process.env.JIRA_USERNAME
+const jiraPassword = process.env.JIRA_PASSWORD
 const issueRegex = new RegExp(process.env.ISSUE_REGEX, 'g')
 const requestMaxResults = 10000
 const defaultNumberOfTags = 10
@@ -34,24 +37,6 @@ const handle = async (context) => {
     return { statusCode: 405, message: 'Method not allowed' }
   }
 
-  // credential extraction
-  /*
-   * Authorization header format in base 64:
-   * {
-   *   gitlab: <gitlab token>,
-   *   jira: {
-   *     username: <jira username>,
-   *     password: <jira password>
-   *   }
-   * }
-   */
-  let authorization = JSON.parse(Buffer.from(context.headers['authorization'], 'base64').toString())
-  let gitlabToken = authorization['gitlab']
-  let jiraCredentials = authorization['jira']
-
-  // test connection to gitlab
-  // test connection to jira
-
   // query parameter extraction
   let projectId = context.query['projectId']
   if (!projectId) {
@@ -71,11 +56,11 @@ const handle = async (context) => {
   try {
     if (fromTagNumber && toTagNumber) {
       tags = [
-        (await getProjectTag(gitlabToken, projectId, toTagNumber)).data,
-        (await getProjectTag(gitlabToken, projectId, fromTagNumber)).data
+        (await getProjectTag(projectId, toTagNumber)).data,
+        (await getProjectTag(projectId, fromTagNumber)).data
       ]
     } else {
-      tags = (await getProjectTags(gitlabToken, projectId, numberOfTags)).data
+      tags = (await getProjectTags(projectId, numberOfTags)).data
     }
   } catch (e) {
     return { statusCode: 500, message: 'An error occurred while retrieving the project tags' }
@@ -84,11 +69,11 @@ const handle = async (context) => {
   let commits
   try {
     if (fromTagNumber && toTagNumber) {
-      commits = (await getProjectCommits(gitlabToken, projectId, tags[1]['commit']['committed_date'], tags[0]['commit']['committed_date'])).data
+      commits = (await getProjectCommits(projectId, tags[1]['commit']['committed_date'], tags[0]['commit']['committed_date'])).data
     } else {
       commits = (tags.length < numberOfTags
-          ? (await getProjectCommits(gitlabToken, projectId))
-          : (await getProjectCommits(gitlabToken, projectId, tags[numberOfTags - 1]['commit']['committed_date'])))
+          ? (await getProjectCommits(projectId))
+          : (await getProjectCommits(projectId, tags[numberOfTags - 1]['commit']['committed_date'])))
           .data
     }
   } catch (e) {
@@ -120,7 +105,7 @@ const handle = async (context) => {
   // get jira ticket statuses
   let issues
   try {
-    issues = (await getTicketData(jiraCredentials, jiraIssues)).data['issues']
+    issues = (await getTicketData(jiraIssues)).data['issues']
   } catch (e) {
     return { statusCode: 500, message: 'An error occurred while retrieving the jira issues' }
   }
@@ -138,25 +123,25 @@ const handle = async (context) => {
   return tagsTickets
 }
 
-function getTicketData(jiraCredentials, jiraTickets) {
+function getTicketData(jiraTickets) {
   return axios.get(
       `${jiraApiUrl}/search?jql=key in (${jiraTickets})&maxResults=${requestMaxResults}&fields=status,subtasks`,
-      { auth: { username: jiraCredentials['username'], password: jiraCredentials['password'] } })
+      { auth: { username: jiraUsername, password: jiraPassword } })
 }
 
-function getProjectCommits(gitlabToken, projectId, since, until) {
+function getProjectCommits(projectId, since, until) {
   return axios.get(
       `${gitlabApiUrl}/projects/${projectId}/repository/commits?per_page=${requestMaxResults}` + (since ? `&since=${since}` : ``) + (until ? `&until=${until}` : ``),
       { headers: { Authorization: `Bearer ${gitlabToken}` } })
 }
 
-function getProjectTags(gitlabToken, projectId, numberOfTags) {
+function getProjectTags(projectId, numberOfTags) {
   return axios.get(
       `${gitlabApiUrl}/projects/${projectId}/repository/tags?per_page=${numberOfTags}`,
       { headers: { Authorization: `Bearer ${gitlabToken}` } })
 }
 
-function getProjectTag(gitlabToken, projectId, tagNumber) {
+function getProjectTag(projectId, tagNumber) {
   return axios.get(
       `${gitlabApiUrl}/projects/${projectId}/repository/tags/${tagNumber}`,
       { headers: { Authorization: `Bearer ${gitlabToken}` } })

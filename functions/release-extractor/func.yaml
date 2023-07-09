@@ -14,7 +14,13 @@ run:
   envs:
   - name: GITLAB_API_URL
     value: to fill
+  - name: GITLAB_TOKEN
+    value: to fill
   - name: JIRA_API_URL
+    value: to fill
+  - name: JIRA_USERNAME
+    value: to fill
+  - name: JIRA_PASSWORD
     value: to fill
   - name: ISSUE_REGEX
     value: to fill
