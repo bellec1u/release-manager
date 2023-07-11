@@ -1,0 +1,28 @@
+<section class="release-manager-projects">
+
+  <div class="release-manager-projects-search">
+    <h1>Projects available:</h1>
+
+    <form [formGroup]="projectsFilterForm">
+      <nz-input-group [nzSuffix]="suffixIconSearch">
+        <input type="text" nz-input placeholder="Search project name" formControlName="name" />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </form>
+  </div>
+
+  <ng-container *ngIf="projects$ | async as projects; else loading">
+    <div *ngFor="let project of projects">
+      <span [id]="project.id">{{project.name}}</span>
+    </div>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="loading-spinner">
+      <nz-spin/>
+    </div>
+  </ng-template>
+
+</section>
