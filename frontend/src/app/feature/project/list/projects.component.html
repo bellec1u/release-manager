@@ -13,16 +13,22 @@
     </form>
   </div>
 
-  <ng-container *ngIf="projects$ | async as projects; else loading">
-    <div *ngFor="let project of projects">
-      <span [id]="project.id">{{project.name}}</span>
-    </div>
-  </ng-container>
-
-  <ng-template #loading>
-    <div class="loading-spinner">
-      <nz-spin/>
-    </div>
-  </ng-template>
+  <div *ngIf="projects$ | async as projects" class="release-manager-projects-list">
+    <ul nz-list [nzDataSource]="projects" [nzLoading]="isLoading">
+      <li nz-list-item *ngFor="let project of projects">
+        <ul nz-list-item-actions>
+          <nz-list-item-action>
+            <a nz-button nzType="link" [href]="project.web_url" target="_blank" rel="noopener noreferrer">
+              <span nz-icon nzType="gitlab" nzTheme="outline"></span>
+            </a>
+            <button nz-button nzType="default" (click)="selectProject.emit(project)">
+              <span nz-icon nzType="right" nzTheme="outline"></span>
+            </button>
+          </nz-list-item-action>
+        </ul>
+        {{ project.name }}
+      </li>
+    </ul>
+  </div>
 
 </section>

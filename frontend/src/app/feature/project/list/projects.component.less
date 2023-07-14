@@ -1,15 +1,19 @@
 .release-manager-projects {
   height: 100%;
+  width: 25rem;
+  padding: 1rem 1rem;
+  box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
 }
 
 .release-manager-projects-search {
   height: 5rem;
 }
 
-.loading-spinner {
-  display: flex;
+.release-manager-projects-list, .no-data {
   height: calc(100% - 5rem);
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
+}
+
+.release-manager-projects-list {
+  overflow: hidden;
+  overflow-y: scroll;
 }
