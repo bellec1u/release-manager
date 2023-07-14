@@ -121,7 +121,13 @@ const handle = async (context) => {
     }
   }
 
-  return tagsTickets
+  // format tag/tickets to array
+  let arrayTagsTickets = []
+  for (let [release, tickets] of Object.entries(tagsTickets)) {
+    arrayTagsTickets.push({ release: release, tickets: tickets })
+  }
+
+  return arrayTagsTickets
 }
 
 function getTicketData(jiraTickets) {
