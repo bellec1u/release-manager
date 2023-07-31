@@ -1,0 +1,40 @@
+<section class="release-manager-selected-project">
+
+  <nz-card nzSize="default" nzTitle="{{ selectedProject.name }}" [nzExtra]="extraTemplate" class="card">
+
+    <section class="card-content">
+
+      <ng-container *ngIf="projectDetails$ | async as projectDetails; else loading">
+
+        <nz-list nzItemLayout="vertical">
+          <nz-list-item *ngFor="let projectDetail of projectDetails">
+            <div>
+              <nz-list-item-meta>
+                <nz-list-item-meta-title>
+                  {{ projectDetail.release }}
+                </nz-list-item-meta-title>
+              </nz-list-item-meta>
+              <p *ngFor="let ticket of projectDetail.tickets">
+                {{ ticket.key }}: {{ ticket.status }}
+              </p>
+            </div>
+          </nz-list-item>
+        </nz-list>
+
+      </ng-container>
+
+      <ng-template #loading>
+        <nz-spin nzSimple></nz-spin>
+      </ng-template>
+
+    </section>
+
+  </nz-card>
+
+  <ng-template #extraTemplate>
+    <button nz-button nzType="default" nzDanger (click)="removeSelectedProject.emit(selectedProject.id)">
+      <span nz-icon nzType="close" nzTheme="outline"></span>
+    </button>
+  </ng-template>
+
+</section>

@@ -1,0 +1,15 @@
+<main>
+  <release-manager-header/>
+  <section class="release-manager-app-content">
+
+    <release-manager-projects (selectProject)="addSelectedProject($event)"/>
+
+    <section class="release-manager-app-selected">
+      <release-manager-project-details
+        *ngFor="let selectedProject of selectedProjects"
+        [selectedProject]="selectedProject"
+        (removeSelectedProject)="removeSelectedProject($event)"/>
+    </section>
+
+  </section>
+</main>

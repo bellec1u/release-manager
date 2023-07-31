@@ -1,0 +1,22 @@
+main, .release-manager-app-content, .release-manager-app-selected {
+  height: 100%;
+}
+
+.release-manager-app-content {
+  width: 100%;
+  height: calc(100% - 4rem);
+  display: flex;
+  flex-direction: row;
+}
+
+.release-manager-app-selected {
+  width: calc(100% - 25rem);
+  display: flex;
+  flex-direction: row;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  release-manager-project-details {
+    flex: 1;
+    min-width: 30%;
+  }
+}

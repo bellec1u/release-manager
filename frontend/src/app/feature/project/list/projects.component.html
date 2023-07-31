@@ -1,0 +1,34 @@
+<section class="release-manager-projects">
+
+  <div class="release-manager-projects-search">
+    <h1>Projects available:</h1>
+
+    <form [formGroup]="projectsFilterForm">
+      <nz-input-group [nzSuffix]="suffixIconSearch">
+        <input type="text" nz-input placeholder="Search project name" formControlName="name" />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </form>
+  </div>
+
+  <div *ngIf="projects$ | async as projects" class="release-manager-projects-list">
+    <ul nz-list [nzDataSource]="projects" [nzLoading]="isLoading">
+      <li nz-list-item *ngFor="let project of projects">
+        <ul nz-list-item-actions>
+          <nz-list-item-action>
+            <a nz-button nzType="link" [href]="project.web_url" target="_blank" rel="noopener noreferrer">
+              <span nz-icon nzType="gitlab" nzTheme="outline"></span>
+            </a>
+            <button nz-button nzType="default" (click)="selectProject.emit(project)">
+              <span nz-icon nzType="right" nzTheme="outline"></span>
+            </button>
+          </nz-list-item-action>
+        </ul>
+        {{ project.name }}
+      </li>
+    </ul>
+  </div>
+
+</section>
