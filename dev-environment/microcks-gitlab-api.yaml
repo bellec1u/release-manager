@@ -1,0 +1,60 @@
+openapi: 3.0.3
+info:
+  title: mock
+  description: |-
+    Mock definition of the different paths used for the project.
+  version: v1
+tags:
+  - name: gitlab
+    description: Calls related to GitLab API
+  - name: function
+    description: Custom project functions
+paths:
+  /gitlab/projects:
+    get:
+      tags:
+        - gitlab
+      summary: Finds projects
+      parameters:
+        - name: per_page
+          in: query
+          schema:
+            type: number
+          examples:
+            projects:
+              value: 100
+        - name: simple
+          in: query
+          schema:
+            type: boolean
+          examples:
+            projects:
+              value: true
+        - name: search
+          in: query
+          schema:
+            type: string
+          examples:
+            empty:
+              value: ''
+            projects:
+              value: project
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              examples:
+                empty:
+                  value: |-
+                    []
+                projects:
+                  value: |-
+                    [
+                      { "todo": "to add" }
+                    ]
+# todo: to add
+#   - gitlab /projects/${projectId}/repository/tags/${tagNumber}
+#   - gitlab /projects/${projectId}/repository/tags
+#   - gitlab /projects/${projectId}/repository/commits
+#   - jira   /search

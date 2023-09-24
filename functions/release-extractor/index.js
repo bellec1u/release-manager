@@ -67,6 +67,7 @@ const handle = async (context) => {
     return { statusCode: 500, message: 'An error occurred while retrieving the project tags' }
   }
 
+  // extract gitlab commits
   let commits
   try {
     if (isDeltaExtraction) {

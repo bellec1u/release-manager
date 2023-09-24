@@ -17,7 +17,7 @@ export class DataProjectsService {
 
   getProjectDetails(projectId: number): Observable<Array<IProjectDetails>> {
     return this.#httpClient.get<Array<IProjectDetails>>(
-      `${environment.releaseExtractorUrl}/?projectId=${projectId}`)
+      `${environment.releaseExtractorUrl}?projectId=${projectId}`)
   }
 
 }
