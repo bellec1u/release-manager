@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  gitlabUrl: '',
+  gitlabUrl: 'http://localhost:8080/rest/mock/v1/gitlab',
   gitlabToken: '',
-  releaseExtractorUrl: ''
+  releaseExtractorUrl: 'http://localhost:8081'
 }
